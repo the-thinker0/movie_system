@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.example.mapper.InvoiceMapper">
+    <select id="selectAll" resultType="com.example.entity.Invoice">
+        select invoice.*, upcoming_movies.name as goodsName, user.name as userName from invoice
+        left join upcoming_movies on invoice.goods_id = upcoming_movies.id
+        left join user on invoice.user_id = user.id
+        <where>
+            <if test="orderNo != null"> and invoice.order_no like concat('%', #{orderNo}, '%')</if>
+        </where>
+        order by invoice.id desc
+    </select>
+
+    <insert id="insert" parameterType="com.example.entity.Invoice" useGeneratedKeys="true">
+        insert into invoice(id, invoice_no, order_no, goods_id, num, user_id, order_time, invoice_time)
+        values (#{id}, #{invoiceNo}, #{orderNo}, #{goodsId}, #{num}, #{userId}, #{orderTime}, #{invoiceTime})
+    </insert>
+
+    <update id="updateById" parameterType="com.example.entity.Invoice">
+        update invoice set invoice_no=#{invoiceNo}, order_no=#{orderNo}, goods_id=#{goodsId}, num=#{num},
+                          user_id=#{userId}, order_time=#{orderTime}, invoice_time=#{invoiceTime}
+        where id = #{id}
+    </update>
+
+</mapper>
